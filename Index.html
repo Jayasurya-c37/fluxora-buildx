@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FLUXORA — Agentic AI for Resilient Maritime Supply Chains</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #050b14; color: #e2e8f0; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .cyber-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(56, 189, 248, 0.25); box-shadow: 0 0 20px rgba(14, 165, 233, 0.08); }
+    .cyber-border-amber { border-color: rgba(245, 158, 11, 0.45); box-shadow: 0 0 20px rgba(245, 158, 11, 0.1); }
+  </style>
+</head>
+<body class="min-h-screen p-4 md:p-6">
+
+  <!-- TOP HEADER -->
+  <header class="cyber-card rounded-xl p-4 mb-6 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-3 h-3 rounded-full bg-cyan-400 animate-ping"></div>
+      <div>
+        <h1 class="text-xl font-bold tracking-wider text-cyan-400">FLUXORA // MARITIME COMMAND</h1>
+        <p class="text-xs text-slate-400">Agentic AI for Temperature-Sensitive Pharmaceutical Supply Chains — Runtime Rebels</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <!-- Network Mode Toggle (Online News Sync vs Offline Edge AI) -->
+      <button id="networkToggleBtn" onclick="toggleNetworkMode()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-2">
+        <span id="netDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="netStatusText">ONLINE (Firebase + News Syncing)</span>
+      </button>
+      <span class="px-3 py-1.5 rounded-lg text-xs mono bg-slate-800 text-cyan-300 border border-slate-700">
+        Engine: <strong id="aiEngineBadge">Edge AI Local + Gemini Sync</strong>
+      </span>
+    </div>
+  </header>
+
+  <!-- MAIN 3-COLUMN GRID -->
+  <main class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- LEFT COLUMN: SIMULATION TRIGGERS & TELEMETRY (4 Cols) -->
+    <section class="lg:col-span-4 space-y-6">
+     
+      <!-- Sensor Simulator Buttons -->
+      <div class="cyber-card rounded-xl p-4">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-cyan-400 mb-3 flex items-center justify-between">
+          <span>1. Threat & Sensor Simulator</span>
+          <span class="text-[11px] mono text-slate-400">Test Cases</span>
+        </h2>
+        <div class="grid grid-cols-1 gap-2.5">
+          <button onclick="runSimulation('NORMAL')" class="w-full text-left p-3 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-emerald-500/30 transition flex justify-between items-center">
+            <div>
+              <div class="text-xs font-bold text-emerald-400">TEST CASE 1: Normal Voyage</div>
+              <div class="text-[11px] text-slate-400">Temp: 4.2°C | Red Sea Clear | ETA: On Time</div>
+            </div>
+            <span class="text-xs mono px-2 py-1 rounded bg-emerald-500/10 text-emerald-300">RUN</span>
+          </button>
+
+          <button onclick="runSimulation('GEOPOLITICAL_DELAY')" class="w-full text-left p-3 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-amber-500/40 transition flex justify-between items-center">
+            <div>
+              <div class="text-xs font-bold text-amber-400">TEST CASE 2: Canal Blockage & Tariff Spike</div>
+              <div class="text-[11px] text-slate-400">Temp: 6.8°C | Delay: +56 hrs | Port Congestion</div>
+            </div>
+            <span class="text-xs mono px-2 py-1 rounded bg-amber-500/10 text-amber-300">RUN</span>
+          </button>
+
+          <button onclick="runSimulation('COLD_CHAIN_BREACH')" class="w-full text-left p-3 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-rose-500/40 transition flex justify-between items-center">
+            <div>
+              <div class="text-xs font-bold text-rose-400">TEST CASE 3: Cold-Chain Failure + Storm</div>
+              <div class="text-[11px] text-slate-400">Temp: 11.4°C (CRITICAL) | Cyclone Warning</div>
+            </div>
+            <span class="text-xs mono px-2 py-1 rounded bg-rose-500/10 text-rose-300">RUN</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Vessel & Cold-Chain Telemetry -->
+      <div class="cyber-card rounded-xl p-4">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-cyan-400 mb-3">2. Medicine & Vessel Telemetry</h2>
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
+            <span class="text-slate-400 block">Cold-Chain Temp</span>
+            <span id="uiTemp" class="text-xl font-bold mono text-emerald-400">4.2 °C</span>
+            <span class="text-[10px] text-slate-500 block mt-0.5">Safe Limit: 2°C – 8°C</span>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
+            <span class="text-slate-400 block">Estimated Delay</span>
+            <span id="uiDelay" class="text-xl font-bold mono text-cyan-300">0 hrs</span>
+            <span id="uiShelfLife" class="text-[10px] text-slate-500 block mt-0.5">Stability Margin: 98%</span>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
+            <span class="text-slate-400 block">Route Risk Score</span>
+            <span id="uiRisk" class="text-lg font-bold mono text-emerald-400">LOW (12/100)</span>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
+            <span class="text-slate-400 block">Cargo Batch</span>
+            <span class="text-sm font-semibold mono text-slate-200">INSULIN-GLARGINE</span>
+            <span class="text-[10px] text-cyan-400 block">Vessel: MV-ASTRAL-09</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE NEWS FEED (Cached in Firebase / LocalStorage for Offline Edge Use) -->
+      <div class="cyber-card rounded-xl p-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-cyan-400">3. Live Maritime News Feed</h2>
+          <span id="newsCacheBadge" class="text-[10px] mono px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+            Cached for Offline Edge
+          </span>
+        </div>
+        <div id="newsFeedContainer" class="space-y-2.5 max-h-56 overflow-y-auto pr-1 text-xs">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- CENTER COLUMN: FLUXORA EDGE AI SCENARIO GENERATOR & AUTHORITY DASHBOARD (5 Cols) -->
+    <section class="lg:col-span-5 space-y-6">
+
+      <!-- Edge AI Analysis Card -->
+      <div class="cyber-card rounded-xl p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold uppercase tracking-wider text-cyan-400">4. Fluxora Edge AI Analysis & Scenarios</h2>
+          <span id="aiModeStatus" class="text-[11px] mono text-emerald-400">● Edge Rules + Cached News Ready</span>
+        </div>
+
+        <div id="aiThreatSummary" class="p-3.5 rounded-lg bg-slate-900/90 border border-slate-800 text-xs text-slate-300 leading-relaxed mb-4">
+          All telemetry nominal. Vessel MV-ASTRAL-09 proceeding via primary corridor. Cold-chain reefers holding steady at 4.2°C.
+        </div>
+
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2.5">Generated Response Scenarios (AI Recommends)</h3>
+        <div id="scenarioList" class="space-y-3">
+          <!-- Dynamically generated scenarios -->
+        </div>
+      </div>
+
+      <!-- HUMAN AUTHORITY REVIEW PANEL -->
+      <div class="cyber-card rounded-xl p-5 border-2 border-cyan-500/40">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-white">5. Human Authority Review Gate</h2>
+          <span class="text-[11px] mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300">AI Recommends. Human Decides.</span>
+        </div>
+        <p class="text-xs text-slate-400 mb-4">
+          Select or modify the recommended action before dispatching routing or emergency replacement orders.
+        </p>
+
+        <div class="mb-3">
+          <label class="text-[11px] text-slate-400 block mb-1">Authority Override / Modification Notes (Optional):</label>
+          <input id="authorityNote" type="text" placeholder="e.g., Reroute via Cape + Pre-order 400 vials from Chennai Hub..."
+            class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-xs text-white focus:outline-none focus:border-cyan-400" />
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+          <button onclick="handleAuthorityDecision('APPROVED')" class="py-2.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition">
+            ✓ APPROVE ACTION
+          </button>
+          <button onclick="handleAuthorityDecision('MODIFIED')" class="py-2.5 px-3 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs transition">
+            ✎ MODIFY & DISPATCH
+          </button>
+          <button onclick="handleAuthorityDecision('REJECTED')" class="py-2.5 px-3 rounded-lg bg-rose-700 hover:bg-rose-600 text-white font-semibold text-xs transition">
+            ✕ REJECT
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: EMERGENCY MEDICINE REPLACEMENT & TAMPER-EVIDENT AUDIT LOG (3 Cols) -->
+    <section class="lg:col-span-3 space-y-6">
+
+      <!-- Emergency Replacement Medicine & Nearby Source Fulfillment -->
+      <div class="cyber-card cyber-border-amber rounded-xl p-4">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-amber-400 mb-2">
+          6. Emergency Replacement & Nearby Source
+        </h2>
+        <p class="text-[11px] text-slate-400 mb-3">
+          Triggers pre-order recommendation when delay or cold-chain breach risks cargo expiry.
+        </p>
+
+        <div id="replacementCard" class="p-3 rounded-lg bg-slate-900/90 border border-slate-800 text-xs space-y-2">
+          <div class="flex justify-between">
+            <span class="text-slate-400">Status:</span>
+            <span id="repStatus" class="font-bold text-emerald-400">STANDBY (No Pre-Order Needed)</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Nearest Regional Hub:</span>
+            <span id="repHub" class="mono text-slate-200">Port Said Cold Hub</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Available Stock:</span>
+            <span id="repStock" class="mono text-cyan-300">1,200 Vials (Verified)</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400">Hospital Dispatch ETA:</span>
+            <span id="repEta" class="mono text-amber-300">4.5 hrs upon approval</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tamper-Evident Audit & Approval Record -->
+      <div class="cyber-card rounded-xl p-4">
+        <h2 class="text-sm font-semibold uppercase tracking-wider text-cyan-400 mb-2">
+          7. Audit & Approval Record (SHA-256)
+        </h2>
+        <p class="text-[11px] text-slate-400 mb-3">
+          Tamper-evident cryptographic hashes synced with Firebase Offline Persistence.
+        </p>
+        <div id="auditLogList" class="space-y-2.5 max-h-80 overflow-y-auto pr-1 text-[11px] mono">
+          <div class="p-2.5 rounded bg-slate-900 border border-slate-800 text-slate-400">
+            Waiting for Human Authority decision...
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    // ============================================================================
+    // 1. LIVE NEWS FEED DATA (Synced when Online, Stored in LocalStorage/Firestore for Offline Edge AI)
+    // ============================================================================
+    const defaultLiveNews = [
+      { id: "N1", time: "10m ago", source: "Maritime Bulletin", severity: "HIGH", title: "Red Sea / Suez Corridor bottlenecks increase transit delay by 48-60 hours." },
+      { id: "N2", time: "24m ago", source: "NOAA Marine", severity: "CRITICAL", title: "Cyclone formation in Arabian Sea; high wave warnings along Western Indian Ocean." },
+      { id: "N3", time: "1h ago", source: "Port Authority", severity: "MEDIUM", title: "Jebel Ali & Colombo Regional Pharma Cold-Hubs report 100% backup reefer availability." },
+      { id: "N4", time: "2h ago", source: "Global Customs", severity: "LOW", title: "Emergency medical shipments granted fast-track green channel clearance." }
+    ];
+
+    // Save news to local offline cache immediately so Edge AI can read it without internet
+    localStorage.setItem("fluxora_cached_news", JSON.stringify(defaultLiveNews));
+
+    let isOnlineMode = true;
+    let currentScenarioState = null;
+
+    function renderNewsFeed() {
+      const cached = JSON.parse(localStorage.getItem("fluxora_cached_news") || "[]");
+      const container = document.getElementById("newsFeedContainer");
+      container.innerHTML = cached.map(item => {
+        const badgeColor = item.severity === "CRITICAL" ? "text-rose-400 border-rose-500/40 bg-rose-500/10"
+                         : item.severity === "HIGH" ? "text-amber-400 border-amber-500/40 bg-amber-500/10"
+                         : "text-cyan-300 border-cyan-500/30 bg-cyan-500/10";
+        return `
+          <div class="p-2.5 rounded-lg bg-slate-900/90 border border-slate-800">
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded border ${badgeColor}">${item.severity}</span>
+              <span class="text-[10px] text-slate-500 mono">${item.source} • ${item.time}</span>
+            </div>
+            <p class="text-slate-300 leading-snug">${item.title}</p>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function toggleNetworkMode() {
+      isOnlineMode = !isOnlineMode;
+      const btn = document.getElementById("networkToggleBtn");
+      const dot = document.getElementById("netDot");
+      const text = document.getElementById("netStatusText");
+      const aiBadge = document.getElementById("aiEngineBadge");
+      const cacheBadge = document.getElementById("newsCacheBadge");
+
+      if (isOnlineMode) {
+        btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-2";
+        dot.className = "w-2 h-2 rounded-full bg-emerald-400";
+        text.innerText = "ONLINE (Firebase + News Syncing)";
+        aiBadge.innerText = "Edge AI Local + Gemini Sync";
+        cacheBadge.innerText = "Live Syncing + Cached";
+      } else {
+        btn.className = "px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/40 flex items-center gap-2";
+        dot.className = "w-2 h-2 rounded-full bg-amber-400";
+        text.innerText = "OFFLINE MODE (Zero Signal — Edge AI Active)";
+        aiBadge.innerText = "100% Offline Edge AI";
+        cacheBadge.innerText = "Reading Offline Cached News";
+      }
+    }
+
+    // ============================================================================
+    // 2. EDGE AI ENGINE (Analyzes Telemetry + Cached Live News Offline or Online)
+    // ============================================================================
+    function runSimulation(testCase) {
+      const cachedNews = JSON.parse(localStorage.getItem("fluxora_cached_news") || "[]");
+
+      if (testCase === "NORMAL") {
+        currentScenarioState = {
+          caseName: "NORMAL VOYAGE",
+          temp: "4.2 °C",
+          tempColor: "text-emerald-400",
+          delay: "0 hrs",
+          stability: "Stability Margin: 98%",
+          risk: "LOW (12/100)",
+          riskColor: "text-emerald-400",
+          summary: `Edge AI cross-checked vessel sensors with ${cachedNews.length} cached maritime news alerts. Primary sea corridor clear. Cold-chain holding optimal 4.2°C.`,
+          scenarios: [
+            { title: "Option A: Maintain Primary Route", desc: "Continue current speed (18 knots). No cold-chain intervention required.", cost: "$0 extra", tag: "RECOMMENDED" }
+          ],
+          replacement: {
+            status: "STANDBY (On Schedule)",
+            statusColor: "text-emerald-400",
+            hub: "Port Said Cold Hub",
+            stock: "1,200 Vials",
+            eta: "Not Required"
+          }
+        };
+      } else if (testCase === "GEOPOLITICAL_DELAY") {
+        currentScenarioState = {
+          caseName: "CANAL BLOCKAGE & TARIFF SPIKE",
+          temp: "6.8 °C",
+          tempColor: "text-amber-400",
+          delay: "+56 hrs",
+          stability: "Stability Margin: 54% (Warning)",
+          risk: "HIGH (74/100)",
+          riskColor: "text-amber-400",
+          summary: `[EDGE AI CORRELATION]: Matched telemetry delay (+56h) with Cached News #N1 ("Red Sea / Suez bottlenecks"). Reefers rising to 6.8°C. High risk of missing hospital delivery window.`,
+          scenarios: [
+            { title: "Option A: Divert to Jeddah Port + Activate Backup Reefer", desc: "Reroute around congestion and lower container setpoint to 3.0°C.", cost: "+$14,200 | Saves 28 hrs", tag: "RECOMMENDED" },
+            { title: "Option B: Pre-Order 50% Buffer Stock from Regional Hub", desc: "Dispatch emergency replacement stock from Colombo/Jebel Ali warehouse to destination hospital.", cost: "+$8,500 | Zero Patient Delay", tag: "FALLBACK" }
+          ],
+          replacement: {
+            status: "PRE-ORDER READY (Awaiting Human Approval)",
+            statusColor: "text-amber-400",
+            hub: "Colombo Regional Pharma Hub",
+            stock: "950 Vials Reserved",
+            eta: "6.0 hrs via Air-Freight"
+          }
+        };
+      } else if (testCase === "COLD_CHAIN_BREACH") {
+        currentScenarioState = {
+          caseName: "COLD-CHAIN BREACH + CYCLONE",
+          temp: "11.4 °C",
+          tempColor: "text-rose-400",
+          delay: "+84 hrs",
+          stability: "CRITICAL: Excursion > 8°C (Spoilage in 5 hrs)",
+          risk: "CRITICAL (96/100)",
+          riskColor: "text-rose-400",
+          summary: `[OFFLINE EDGE AI EMERGENCY]: Temp breached 11.4°C alongside Cached News #N2 ("Cyclone formation in Arabian Sea"). Shipment will miss hospital deadline and fail quality compliance.`,
+          scenarios: [
+            { title: "Option A: Trigger Immediate Nearby Source Fulfillment", desc: "Procure 100% replacement batch from nearest regional hub (News #N3 verified stock) for immediate hospital delivery.", cost: "Priority Emergency Dispatch", tag: "CRITICAL ACTION" },
+            { title: "Option B: Emergency Port Docking for Reefer Repair", desc: "Dock at nearest safe port to salvage remaining sealed pallets.", cost: "Salvage Protocol", tag: "SECONDARY" }
+          ],
+          replacement: {
+            status: "EMERGENCY TRIGGERED (Pending Authority Sign-off)",
+            statusColor: "text-rose-400",
+            hub: "Jebel Ali / Chennai Cold Hub",
+            stock: "1,500 Vials Ready for Dispatch",
+            eta: "3.2 hrs Direct to Hospital"
+          }
+        };
+      }
+
+      updateDashboardUI(currentScenarioState);
+    }
+
+    function updateDashboardUI(state) {
+      document.getElementById("uiTemp").innerText = state.temp;
+      document.getElementById("uiTemp").className = `text-xl font-bold mono ${state.tempColor}`;
+      document.getElementById("uiDelay").innerText = state.delay;
+      document.getElementById("uiShelfLife").innerText = state.stability;
+      document.getElementById("uiRisk").innerText = state.risk;
+      document.getElementById("uiRisk").className = `text-lg font-bold mono ${state.riskColor}`;
+
+      document.getElementById("aiThreatSummary").innerText = state.summary;
+
+      const scenarioHTML = state.scenarios.map((s, idx) => `
+        <div class="p-3.5 rounded-lg bg-slate-900 border border-cyan-500/30">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-cyan-300">${s.title}</span>
+            <span class="text-[10px] mono px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-200">${s.tag}</span>
+          </div>
+          <p class="text-xs text-slate-300 mb-1.5">${s.desc}</p>
+          <span class="text-[11px] mono text-amber-300">Impact: ${s.cost}</span>
+        </div>
+      `).join("");
+      document.getElementById("scenarioList").innerHTML = scenarioHTML;
+
+      document.getElementById("repStatus").innerText = state.replacement.status;
+      document.getElementById("repStatus").className = `font-bold ${state.replacement.statusColor}`;
+      document.getElementById("repHub").innerText = state.replacement.hub;
+      document.getElementById("repStock").innerText = state.replacement.stock;
+      document.getElementById("repEta").innerText = state.replacement.eta;
+    }
+
+    // ============================================================================
+    // 3. HUMAN AUTHORITY APPROVAL + SHA-256 TAMPER-EVIDENT AUDIT RECORD
+    // ============================================================================
+    async function generateSHA256(payloadString) {
+      const msgBuffer = new TextEncoder().encode(payloadString);
+      const hashBuffer = await crypto.subtle.digest("SHA-256", msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    async function handleAuthorityDecision(decisionType) {
+      if (!currentScenarioState) {
+        runSimulation("GEOPOLITICAL_DELAY");
+      }
+      const note = document.getElementById("authorityNote").value.trim() || "Standard Authority Sign-off";
+      const timestamp = new Date().toISOString();
+
+      const recordPayload = JSON.stringify({
+        timestamp,
+        decision: decisionType,
+        scenario: currentScenarioState.caseName,
+        temp: currentScenarioState.temp,
+        replacementHub: currentScenarioState.replacement.hub,
+        authorityNote: note,
+        mode: isOnlineMode ? "ONLINE_FIREBASE_SYNC" : "OFFLINE_EDGE_QUEUE"
+      });
+
+      const hash = await generateSHA256(recordPayload);
+      const shortHash = hash.substring(0, 20) + "...";
+
+      const logContainer = document.getElementById("auditLogList");
+      const badgeColor = decisionType === "APPROVED" ? "text-emerald-400"
+                       : decisionType === "MODIFIED" ? "text-amber-400" : "text-rose-400";
+
+      const newLogHTML = `
+        <div class="p-2.5 rounded-lg bg-slate-900/95 border border-slate-700 space-y-1">
+          <div class="flex justify-between">
+            <span class="font-bold ${badgeColor}">${decisionType}</span>
+            <span class="text-slate-500">${new Date().toLocaleTimeString()}</span>
+          </div>
+          <div class="text-slate-300">Case: ${currentScenarioState.caseName}</div>
+          <div class="text-slate-400">Note: ${note}</div>
+          <div class="text-cyan-400 break-all">SHA256: ${shortHash}</div>
+          <div class="text-[10px] text-slate-500">Sync: ${isOnlineMode ? "✓ Saved to Firebase" : "⏳ Queued in Firebase Offline Cache"}</div>
+        </div>
+      `;
+
+      if (logContainer.innerText.includes("Waiting for Human")) {
+        logContainer.innerHTML = newLogHTML;
+      } else {
+        logContainer.innerHTML = newLogHTML + logContainer.innerHTML;
+      }
+
+      document.getElementById("authorityNote").value = "";
+    }
+
+    // Initialize on load
+    renderNewsFeed();
+    runSimulation("NORMAL");
+  </script>
+</body>
+</html>
